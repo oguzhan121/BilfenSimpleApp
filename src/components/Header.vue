@@ -1,5 +1,6 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <notifications position="left top"/>
     <router-link to="/" class="navbar-brand">Navbar</router-link>
 
 

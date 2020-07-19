@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
+import mixins from "./mixins";
 
 Vue.use(Vuex);
 
@@ -8,8 +9,7 @@ Vue.use(Vuex);
 const moduleForm = {
   state: {
     usersData: {},
-    loginSuccess: false,
-    message: null
+    loginSuccess: false
   },
   actions: {
     loginPost(context, credentials) {
@@ -21,11 +21,10 @@ const moduleForm = {
             password: credentials.password,
           })
           .then(response => {
-            context.commit('setLogin', response.data);
+            context.commit('setLogin');
             resolve(response)
           })
           .catch(error => {
-            context.commit('messageFunction', 'Hatalı işlem');
             reject(error)
           })
       })
@@ -38,27 +37,31 @@ const moduleForm = {
           commit('setAccount', posts)
         })
         .catch(error => {
-          state.message = 'Kullanıcı bilgileri hatalı...';
         })
     }
   },
   mutations: {
-    messageFunction(state, responseMessage) {
-      state.message = responseMessage
-    },
     exitUser(state) {
       state.loginSuccess = false;
       state.username = '';
-      state.message = 'Çıkış başaralı';
+      mixins.methods.Error_Message('Çıkış', 'Başarılı', 'success')
     },
     setLogin(state, response) {
+      mixins.methods.Error_Message('Giriş başarılı', 'Aktif', 'success')
       state.loginSuccess = true;
     },
     setAccount(state, data) {
       state.usersData = data
     },
     updateAccount(state, phone) {
+      mixins.methods.Error_Message('Güncelleme', 'Başarılı', 'success')
       state.usersData.phone = phone;
+    },
+    loginErrorMessage() {
+      mixins.methods.Error_Message('Hatalı işlem', 'Tekrar deneyiniz', 'error')
+    },
+    accounErrorMessage(){
+      mixins.methods.Error_Message('Hatalı işlem', 'Giriş yapınız', 'error')
     }
   },
 };
@@ -69,6 +72,7 @@ const vuexLocal = new createPersistedState({
 });
 
 const store = new Vuex.Store({
+  mixins: [mixins],
   modules: {
     loginStore: moduleForm
   },

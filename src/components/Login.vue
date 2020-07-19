@@ -1,12 +1,9 @@
 <template>
-  <div class="wrapper fadeInDown">
+  <div class="wrapper fadeInDown bg">
     <div id="formContent">
-
-      <!--Error Message-->
-      <div class="alert alert-dark" role="alert" v-if="$store.state.loginStore.message!=''">
-        {{$store.state.loginStore.message}}
-      </div>
-
+       <div class="card-header">
+            <h3 class="mb-0">Login</h3>
+          </div>
       <!-- Login Form -->
       <form>
         <input type="text" class="fadeIn second" v-model="login_email"
@@ -37,7 +34,11 @@
           password:this.login_password
         })
         .then(response=>{
+          this.$store.commit('loginSuccessMessage');
           this.$router.push('/account')
+        })
+        .catch(error => {
+            this.$store.commit('loginErrorMessage');
         })
       },
 
